@@ -15,6 +15,12 @@ namespace _Project.Scripts.Scenario
         
         private readonly HashSet<IInteractable> _registeredInteractables = new HashSet<IInteractable>();
 
+        /// <summary>
+        /// All currently registered interactables. Used e.g. by ScenarioHighlighter
+        /// to find which scene objects correspond to a step's expected TargetId.
+        /// </summary>
+        public IReadOnlyCollection<IInteractable> RegisteredInteractables => _registeredInteractables;
+
         private void Start()
         {
             var monoBehaviours = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
