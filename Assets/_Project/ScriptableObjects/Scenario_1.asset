@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66bbc805a8994efcaadeb9fcbb959c20, type: 3}
+  m_Name: Scenario_1
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Scenario.Data.ScenarioSO
+  stepGroups:
+  - {fileID: 11400000, guid: a1820d6761190f043b59c24dc925b646, type: 2}
+  - {fileID: 11400000, guid: 6904b47580b5aa14c85e1e464f408f66, type: 2}
+  - {fileID: 11400000, guid: be894bee44b8ace409383178135a8ea5, type: 2}
