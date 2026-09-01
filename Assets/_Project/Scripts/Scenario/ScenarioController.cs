@@ -22,6 +22,7 @@ namespace _Project.Scripts.Scenario
         private readonly List<StepReport> _reports = new List<StepReport>();
 
         public event Action<StepSO> OnStepStarted;
+        public event Action<StepSO, StepAction> OnStepActionCompleted;
         public event Action<StepSO, StepStatus> OnStepCompleted;
         public event Action<StepGroupSO> OnGroupStarted;
         public event Action<StepGroupSO> OnGroupCompleted;
@@ -107,6 +108,7 @@ namespace _Project.Scripts.Scenario
             {
                 case ValidationResultType.ActionSuccess:
                     _completedActionIndices.Add(result.MatchedActionIndex);
+                    OnStepActionCompleted?.Invoke(activeStep, activeStep.ExpectedActions[result.MatchedActionIndex]);
                     break;
 
                 case ValidationResultType.StepSuccess:
