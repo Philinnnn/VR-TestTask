@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace _Project.Scripts.Scenario.Data
@@ -7,12 +8,16 @@ namespace _Project.Scripts.Scenario.Data
     {
         [SerializeField] private int id;
         [TextArea] [SerializeField] private string description;
-        [SerializeField] private ActionType expectedAction;
-        [SerializeField] private string targetId;
+        [SerializeField] private List<StepAction> expectedActions = new List<StepAction>();
 
         public int Id => id;
         public string Description => description;
-        public ActionType ExpectedAction => expectedAction;
-        public string TargetId => targetId;
+
+        /// <summary>
+        /// All actions the user must perform (in any order) to complete this step.
+        /// Most steps have exactly one entry; steps that need several actions
+        /// (e.g. "enter zone" + "press button") list all of them here.
+        /// </summary>
+        public IReadOnlyList<StepAction> ExpectedActions => expectedActions;
     }
 }
