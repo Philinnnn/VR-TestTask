@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Scenario.Data.StepSO
   id: 8
   description: Take the key
-  expectedAction: 0
-  targetId: Cube_Key
+  expectedActions:
+  - actionType: 1
+    targetId: Cube_Key

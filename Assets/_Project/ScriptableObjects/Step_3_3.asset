@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Scenario.Data.StepSO
   id: 9
   description: Press finish button
-  expectedAction: 0
-  targetId: Btn_Finish
+  expectedActions:
+  - actionType: 3
+    targetId: btn_Finish

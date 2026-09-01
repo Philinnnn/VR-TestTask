@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Scenario.Data.StepSO
   id: 3
   description: Press confirm button
-  expectedAction: 3
-  targetId: Btn_Confirm
+  expectedActions:
+  - actionType: 3
+    targetId: btn_Confirm

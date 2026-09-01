@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Scenario.Data.StepSO
   id: 5
   description: Take the detector
-  expectedAction: 0
-  targetId: Cube_Detector
+  expectedActions:
+  - actionType: 1
+    targetId: Cube_Detector

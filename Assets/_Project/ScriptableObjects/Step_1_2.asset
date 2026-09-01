@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Scenario.Data.StepSO
   id: 2
   description: Take passport from the table
-  expectedAction: 1
-  targetId: Cube_Passport
+  expectedActions:
+  - actionType: 1
+    targetId: Cube_Passport

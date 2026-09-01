@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Scenario.Data.StepSO
   id: 7
   description: Enter zone C
-  expectedAction: 0
-  targetId: Zone_C
+  expectedActions:
+  - actionType: 0
+    targetId: Zone_C
