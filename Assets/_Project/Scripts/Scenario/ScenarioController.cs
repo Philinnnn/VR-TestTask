@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using _Project.Scripts.Interactions;
 using _Project.Scripts.Scenario.Data;
@@ -15,18 +16,23 @@ namespace _Project.Scripts.Scenario
 
         private int _currentGroupIndex;
         private int _currentStepIndex;
-        private bool _isScenarioActive;
+        
+        private readonly HashSet<int> _completedActionIndices = new HashSet<int>();
+
+        private readonly List<StepReport> _reports = new List<StepReport>();
 
         public event Action<StepSO> OnStepStarted;
         public event Action<StepSO, StepStatus> OnStepCompleted;
         public event Action<StepGroupSO> OnGroupStarted;
         public event Action<StepGroupSO> OnGroupCompleted;
         public event Action OnSequenceError;
-        public event Action OnScenarioFinished;
+        public event Action<IReadOnlyList<StepReport>> OnScenarioFinished;
 
         public StepSO CurrentStep => GetCurrentStep();
         public StepGroupSO CurrentGroup => GetCurrentGroup();
-        public bool IsActive => _isScenarioActive;
+        public bool IsActive { get; private set; }
+
+        public IReadOnlyList<StepReport> Reports => _reports;
 
         private void Awake()
         {
@@ -36,12 +42,14 @@ namespace _Project.Scripts.Scenario
 
         private void OnEnable()
         {
-            _registrar.OnAnyInteraction += ProcessInteraction;
+            if (_registrar != null)
+                _registrar.OnAnyInteraction += ProcessInteraction;
         }
 
         private void OnDisable()
         {
-            _registrar.OnAnyInteraction -= ProcessInteraction;
+            if (_registrar != null)
+                _registrar.OnAnyInteraction -= ProcessInteraction;
         }
 
         private void Start()
@@ -54,9 +62,10 @@ namespace _Project.Scripts.Scenario
 
         public void StartScenario()
         {
+            _reports.Clear();
             _currentGroupIndex = 0;
             _currentStepIndex = 0;
-            _isScenarioActive = true;
+            IsActive = true;
             StartCurrentGroup();
         }
 
@@ -75,6 +84,8 @@ namespace _Project.Scripts.Scenario
 
         private void StartCurrentStep()
         {
+            _completedActionIndices.Clear();
+
             var step = GetCurrentStep();
             if (step != null)
             {
@@ -84,30 +95,45 @@ namespace _Project.Scripts.Scenario
 
         private void ProcessInteraction(IInteractable interactable)
         {
-            if (!_isScenarioActive) return;
+            if (!IsActive) return;
 
             var activeStep = GetCurrentStep();
             var activeGroup = GetCurrentGroup();
 
-            var result = _validator.Validate(interactable, activeStep, activeGroup, _currentStepIndex);
+            var result = _validator.Validate(
+                interactable, activeStep, activeGroup, _currentStepIndex, _completedActionIndices);
 
-            switch (result)
+            switch (result.Type)
             {
-                case ValidationResultType.Success:
+                case ValidationResultType.ActionSuccess:
+                    _completedActionIndices.Add(result.MatchedActionIndex);
+                    break;
+
+                case ValidationResultType.StepSuccess:
+                    _reports.Add(new StepReport(activeStep, StepStatus.Success));
                     OnStepCompleted?.Invoke(activeStep, StepStatus.Success);
                     AdvanceToNextStep();
                     break;
 
                 case ValidationResultType.Failed:
+                    _reports.Add(new StepReport(activeStep, StepStatus.Failed));
                     OnStepCompleted?.Invoke(activeStep, StepStatus.Failed);
                     AdvanceToNextStep();
                     break;
 
                 case ValidationResultType.SequenceViolation:
+                    _reports.Add(new StepReport(activeStep, StepStatus.Failed));
+
+                    for (var i = _currentStepIndex + 1; i < activeGroup.Steps.Count; i++)
+                    {
+                        _reports.Add(new StepReport(activeGroup.Steps[i], StepStatus.Skipped));
+                    }
+
                     OnSequenceError?.Invoke();
                     OnGroupCompleted?.Invoke(activeGroup);
                     AdvanceToNextGroup();
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -140,8 +166,8 @@ namespace _Project.Scripts.Scenario
 
         private void FinishScenario()
         {
-            _isScenarioActive = false;
-            OnScenarioFinished?.Invoke();
+            IsActive = false;
+            OnScenarioFinished?.Invoke(_reports);
         }
 
         private StepGroupSO GetCurrentGroup()
