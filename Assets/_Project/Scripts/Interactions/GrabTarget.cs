@@ -3,7 +3,8 @@ using UnityEngine;
 namespace _Project.Scripts.Interactions
 {
     /// <summary>
-    /// An object that can be picked up ("grabbed"). Deliberately input-agnostic:
+    /// An object that can be picked up and carried around by the player.
+    /// When grabbed, it will follow a specified hold point
     /// </summary>
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(Collider))]
