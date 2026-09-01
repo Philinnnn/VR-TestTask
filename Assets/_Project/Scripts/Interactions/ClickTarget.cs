@@ -1,6 +1,8 @@
+using UnityEngine.EventSystems;
+
 namespace _Project.Scripts.Interactions
 {
-    public class ClickTarget : BaseInteractable
+    public class ClickTarget : BaseInteractable, IPointerClickHandler
     {
         // Mouse click event handler
         private void OnMouseDown()
@@ -9,7 +11,7 @@ namespace _Project.Scripts.Interactions
         }
         
         // Pointer click event handler for UI elements
-        public void OnPointerClick()
+        public void OnPointerClick(PointerEventData eventData)
         {
             TriggerInteraction();
         }
