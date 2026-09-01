@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using _Project.Scripts.Core;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using _Project.Scripts.Scenario;
 using _Project.Scripts.Scenario.Data;
 
@@ -18,9 +18,6 @@ namespace _Project.Scripts.UI
         [Header("Buttons")]
         [SerializeField] private Button restartButton;
         [SerializeField] private Button lobbyButton;
-
-        [Header("Scene Settings")]
-        [SerializeField] private string lobbySceneName = "LobbyScene";
 
         private void Awake()
         {
@@ -84,7 +81,8 @@ namespace _Project.Scripts.UI
 
         private void OnLobbyClicked()
         {
-            SceneManager.LoadScene(lobbySceneName);
+            if (GameManager.Instance != null)
+                GameManager.Instance.ReturnToLobby();
         }
     }
 }
