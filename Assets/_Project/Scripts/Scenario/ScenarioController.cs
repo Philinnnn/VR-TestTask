@@ -24,10 +24,11 @@ namespace _Project.Scripts.Scenario
         public event Action<StepSO> OnStepStarted;
         public event Action<StepSO, StepAction> OnStepActionCompleted;
         public event Action<StepSO, StepStatus> OnStepCompleted;
-        public event Action<StepGroupSO> OnGroupStarted;
+        public event Action OnGroupStarted;
         public event Action<StepGroupSO> OnGroupCompleted;
         public event Action OnSequenceError;
         public event Action<IReadOnlyList<StepReport>> OnScenarioFinished;
+        public event Action OnScenarioStarted;
 
         public StepSO CurrentStep => GetCurrentStep();
         public StepGroupSO CurrentGroup => GetCurrentGroup();
@@ -67,6 +68,7 @@ namespace _Project.Scripts.Scenario
             _currentGroupIndex = 0;
             _currentStepIndex = 0;
             IsActive = true;
+            OnScenarioStarted?.Invoke();
             StartCurrentGroup();
         }
 
@@ -77,9 +79,8 @@ namespace _Project.Scripts.Scenario
                 FinishScenario();
                 return;
             }
-
             _currentStepIndex = 0;
-            OnGroupStarted?.Invoke(GetCurrentGroup());
+            OnGroupStarted?.Invoke();
             StartCurrentStep();
         }
 
