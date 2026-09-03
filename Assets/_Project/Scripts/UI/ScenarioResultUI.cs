@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using _Project.Scripts.Core;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using _Project.Scripts.Scenario;
 using _Project.Scripts.Scenario.Data;
 
@@ -14,6 +15,7 @@ namespace _Project.Scripts.UI
         [SerializeField] private GameObject resultPanel;
         [SerializeField] private Transform container;
         [SerializeField] private ScenarioResultItemUI itemPrefab;
+        [SerializeField] private TMP_Text summaryText;
 
         [Header("Buttons")]
         [SerializeField] private Button restartButton;
@@ -54,6 +56,9 @@ namespace _Project.Scripts.UI
             if (resultPanel != null)
                 resultPanel.SetActive(true);
 
+            if (container == null || itemPrefab == null)
+                return;
+
             foreach (Transform child in container)
             {
                 Destroy(child.gameObject);
@@ -61,12 +66,42 @@ namespace _Project.Scripts.UI
 
             if (reports != null)
             {
-                foreach (var report in reports)
+                var successCount = 0;
+                var failedCount = 0;
+                var skippedCount = 0;
+
+                for (var i = 0; i < reports.Count; i++)
                 {
+                    var report = reports[i];
                     var item = Instantiate(itemPrefab, container);
                     var description = report.Step != null ? report.Step.Description : "Unknown step";
-                    item.Setup(description, report.Status);
+                    item.Setup(i, description, report.Status);
+
+                    switch (report.Status)
+                    {
+                        case StepStatus.Success:
+                            successCount++;
+                            break;
+                        case StepStatus.Failed:
+                            failedCount++;
+                            break;
+                        case StepStatus.Skipped:
+                            skippedCount++;
+                            break;
+                    }
                 }
+
+                if (summaryText != null)
+                {
+                    summaryText.text = $"Result: total {reports.Count} | " +
+                                       $"success {successCount} | " +
+                                       $"failed {failedCount} | " +
+                                       $"skipped {skippedCount}";
+                }
+            }
+            else if (summaryText != null)
+            {
+                summaryText.text = "Result: steps not found";
             }
         }
 
@@ -74,6 +109,12 @@ namespace _Project.Scripts.UI
         {
             if (resultPanel != null)
                 resultPanel.SetActive(false);
+
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.RestartTraining();
+                return;
+            }
 
             if (scenarioController != null)
                 scenarioController.StartScenario();
