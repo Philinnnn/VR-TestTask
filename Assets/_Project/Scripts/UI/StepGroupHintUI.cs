@@ -54,8 +54,9 @@ namespace _Project.Scripts.UI
                 closeButton.onClick.RemoveListener(Hide);
         }
 
-        private void ShowHint(StepGroupSO group)
+        private void ShowHint()
         {
+            var group = scenarioController != null ? scenarioController.CurrentGroup : null;
             if (group == null || hintPanel == null) return;
 
             if (groupNameText != null)
