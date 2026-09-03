@@ -15,5 +15,5 @@ MonoBehaviour:
   id: 8
   description: Take the key
   expectedActions:
-  - actionType: 1
+  - actionType: 2
     targetId: Cube_Key
