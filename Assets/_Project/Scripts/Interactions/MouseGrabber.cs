@@ -21,8 +21,7 @@ namespace _Project.Scripts.Interactions
         {
             if (sourceCamera == null)
                 sourceCamera = Camera.main;
-
-            // Simple point in front of the camera the grabbed object is carried to.
+            
             var holdPointGo = new GameObject("MouseGrabber_HoldPoint");
             holdPointGo.transform.SetParent(transform);
             _holdPoint = holdPointGo.transform;
@@ -46,7 +45,7 @@ namespace _Project.Scripts.Interactions
 
         private void TryGrab()
         {
-            var ray = sourceCamera.ScreenPointToRay(Input.mousePosition);
+            var ray = new Ray(sourceCamera.transform.position, sourceCamera.transform.forward);
             if (Physics.Raycast(ray, out var hit, maxRayDistance, grabbableLayers))
             {
                 var target = hit.collider.GetComponentInParent<GrabTarget>();
