@@ -15,5 +15,10 @@ namespace _Project.Scripts.Interactions
         {
             TriggerInteraction();
         }
+        
+        public void Click()
+        {
+            TriggerInteraction();
+        }
     }
 }
