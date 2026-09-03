@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using _Project.Scripts.Interactions;
@@ -32,6 +33,19 @@ namespace _Project.Scripts.Scenario
             scenarioController.OnStepCompleted += HandleStepCompleted;
             scenarioController.OnGroupCompleted += HandleGroupCompleted;
             scenarioController.OnScenarioFinished += HandleScenarioFinished;
+            
+            StartCoroutine(RefreshHighlightNextFrame());
+        }
+
+        private IEnumerator RefreshHighlightNextFrame()
+        {
+            yield return null;
+
+            if (scenarioController != null && scenarioController.IsActive && scenarioController.CurrentStep != null)
+            {
+                ClearAllHighlights();
+                HighlightStep(scenarioController.CurrentStep);
+            }
         }
 
         private void OnDisable()
